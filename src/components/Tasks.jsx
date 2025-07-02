@@ -10,11 +10,29 @@ import TASKS from '../constants/tasks';
 import { useState } from 'react';
 
 const Tasks = () => {
-  const [tasks] = useState(TASKS);
+  const [tasks, setTasks] = useState(TASKS);
 
   const morningTasks = tasks.filter((tasks) => tasks.period === 'morning');
   const afternoonTasks = tasks.filter((tasks) => tasks.period === 'afternoon');
   const nightTasks = tasks.filter((tasks) => tasks.period === 'evening');
+
+  const handleCheckedStatus = (taskId) => {
+    const newTasks = tasks.map((task) => {
+      if (task.id !== taskId) return task;
+
+      if (task.status === 'not_started') {
+        return { ...task, status: 'in_progress' };
+      }
+
+      if (task.status === 'in_progress') {
+        return { ...task, status: 'done' };
+      }
+
+      return { ...task, status: 'not_started' };
+    });
+
+    setTasks(newTasks);
+  };
 
   return (
     <div className="w-full space-y-6 px-8 py-16">
@@ -40,21 +58,33 @@ const Tasks = () => {
         <div className="space-y-3">
           <TasksSeparator icon={<SunIcon />} title={'Manhã'} />
           {morningTasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
+            <TaskItem
+              key={task.id}
+              task={task}
+              handleCheckedStatus={handleCheckedStatus}
+            />
           ))}
         </div>
 
         <div className="my-6 space-y-3">
           <TasksSeparator icon={<CloudSunIcon />} title={'Tarde'} />
           {afternoonTasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
+            <TaskItem
+              key={task.id}
+              task={task}
+              handleCheckedStatus={handleCheckedStatus}
+            />
           ))}
         </div>
 
         <div className="space-y-3">
           <TasksSeparator icon={<MoonIcon />} title={'Noite'} />
           {nightTasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
+            <TaskItem
+              key={task.id}
+              task={task}
+              handleCheckedStatus={handleCheckedStatus}
+            />
           ))}
         </div>
       </div>
