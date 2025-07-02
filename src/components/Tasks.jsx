@@ -16,7 +16,7 @@ const Tasks = () => {
   const afternoonTasks = tasks.filter((tasks) => tasks.period === 'afternoon');
   const nightTasks = tasks.filter((tasks) => tasks.period === 'evening');
 
-  const handleCheckedStatus = (taskId) => {
+  const handleCheckStatus = (taskId) => {
     const newTasks = tasks.map((task) => {
       if (task.id !== taskId) return task;
 
@@ -31,6 +31,11 @@ const Tasks = () => {
       return { ...task, status: 'not_started' };
     });
 
+    setTasks(newTasks);
+  };
+
+  const handleDeletTask = (taskId) => {
+    const newTasks = tasks.filter((task) => task.id !== taskId);
     setTasks(newTasks);
   };
 
@@ -61,7 +66,8 @@ const Tasks = () => {
             <TaskItem
               key={task.id}
               task={task}
-              handleCheckedStatus={handleCheckedStatus}
+              handleCheckStatus={handleCheckStatus}
+              handleDeletTask={handleDeletTask}
             />
           ))}
         </div>
@@ -72,7 +78,8 @@ const Tasks = () => {
             <TaskItem
               key={task.id}
               task={task}
-              handleCheckedStatus={handleCheckedStatus}
+              handleCheckStatus={handleCheckStatus}
+              handleDeletTask={handleDeletTask}
             />
           ))}
         </div>
@@ -83,7 +90,8 @@ const Tasks = () => {
             <TaskItem
               key={task.id}
               task={task}
-              handleCheckedStatus={handleCheckedStatus}
+              handleCheckStatus={handleCheckStatus}
+              handleDeletTask={handleDeletTask}
             />
           ))}
         </div>
