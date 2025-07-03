@@ -11,34 +11,32 @@ import Input from './Input';
 import TimeSelect from './TimeSelect';
 
 const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [period, setPeriod] = useState('');
   const [errors, setErrors] = useState([]);
 
   const nodeRef = useRef();
+  const titleRef = useRef();
+  const descriptionRef = useRef();
+  const periodRef = useRef();
 
   useEffect(() => {
-    setTitle('');
-    setDescription('');
-    setPeriod('');
     setErrors([]);
   }, [isOpen]);
 
   const handleSaveClick = () => {
     const errors = [];
-    if (!title.trim()) {
+
+    if (!titleRef.current.value.trim()) {
       errors.push({ field: 'title', message: 'Título é obrigatório.' });
     }
 
-    if (!description.trim()) {
+    if (!descriptionRef.current.value.trim()) {
       errors.push({
         field: 'description',
         message: 'Descrição é obrigatória.',
       });
     }
 
-    if (!period.trim()) {
+    if (!periodRef.current.value.trim()) {
       errors.push({ field: 'period', message: 'Período é obrigatório.' });
     }
 
@@ -50,32 +48,11 @@ const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
 
     handleSubmit({
       id: v4(),
-      title: title,
-      description: description,
-      period: period,
+      title: titleRef.current.value,
+      description: descriptionRef.current.value,
+      period: periodRef.current.value,
       status: 'not_started',
     });
-  };
-
-  const handleChangeTitle = (event) => {
-    setTitle(event.target.value);
-    setErrors((prevErrors) =>
-      prevErrors.filter((error) => error.field !== 'title')
-    );
-  };
-
-  const handleChangeDescription = (event) => {
-    setDescription(event.target.value);
-    setErrors((prevErrors) =>
-      prevErrors.filter((error) => error.field !== 'description')
-    );
-  };
-
-  const handleChangePeriod = (event) => {
-    setPeriod(event.target.value);
-    setErrors((prevErrors) =>
-      prevErrors.filter((error) => error.field !== 'period')
-    );
   };
 
   const titleError = errors.find((error) => error.field === 'title');
@@ -107,21 +84,16 @@ const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
               id="title"
               label="Título"
               placeholder="Título da tarefa"
-              onChange={handleChangeTitle}
-              value={title}
               errorMessage={titleError?.message}
+              ref={titleRef}
             />
-            <TimeSelect
-              onChange={handleChangePeriod}
-              errorMessage={periodError?.message}
-            />
+            <TimeSelect errorMessage={periodError?.message} ref={periodRef} />
             <Input
               id="description"
               label="Descrição"
               placeholder="Descreva a tarefa"
-              onChange={handleChangeDescription}
-              value={description}
               errorMessage={descriptionError?.message}
+              ref={descriptionRef}
             />
 
             <div className="flex gap-3">
