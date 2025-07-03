@@ -17,6 +17,9 @@ const TimeSelect = (props) => {
         <option value="afternoon">Tarde</option>
         <option value="evening">Noite</option>
       </select>
+      {props.errorMessage && (
+        <span className="text-xs text-red-400">{props.errorMessage}</span>
+      )}
     </div>
   );
 };

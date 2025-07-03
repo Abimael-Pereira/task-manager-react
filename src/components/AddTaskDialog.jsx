@@ -14,6 +14,7 @@ const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [period, setPeriod] = useState('');
+  const [errors, setErrors] = useState([]);
 
   const nodeRef = useRef();
 
@@ -21,11 +22,29 @@ const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
     setTitle('');
     setDescription('');
     setPeriod('');
+    setErrors([]);
   }, [isOpen]);
 
   const handleSaveClick = () => {
-    if (!title.trim() || !description.trim() || !period.trim()) {
-      toast.warning('Por favor, preencha todos os campos.');
+    const errors = [];
+    if (!title.trim()) {
+      errors.push({ field: 'title', message: 'Título é obrigatório.' });
+    }
+
+    if (!description.trim()) {
+      errors.push({
+        field: 'description',
+        message: 'Descrição é obrigatória.',
+      });
+    }
+
+    if (!period.trim()) {
+      errors.push({ field: 'period', message: 'Período é obrigatório.' });
+    }
+
+    if (errors.length > 0) {
+      setErrors(errors);
+      toast.error('Por favor, preencha todos os campos.');
       return;
     }
 
@@ -37,6 +56,33 @@ const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
       status: 'not_started',
     });
   };
+
+  const handleChangeTitle = (event) => {
+    setTitle(event.target.value);
+    setErrors((prevErrors) =>
+      prevErrors.filter((error) => error.field !== 'title')
+    );
+  };
+
+  const handleChangeDescription = (event) => {
+    setDescription(event.target.value);
+    setErrors((prevErrors) =>
+      prevErrors.filter((error) => error.field !== 'description')
+    );
+  };
+
+  const handleChangePeriod = (event) => {
+    setPeriod(event.target.value);
+    setErrors((prevErrors) =>
+      prevErrors.filter((error) => error.field !== 'period')
+    );
+  };
+
+  const titleError = errors.find((error) => error.field === 'title');
+  const descriptionError = errors.find(
+    (error) => error.field === 'description'
+  );
+  const periodError = errors.find((error) => error.field === 'period');
 
   return createPortal(
     <CSSTransition
@@ -61,16 +107,21 @@ const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
               id="title"
               label="Título"
               placeholder="Título da tarefa"
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={handleChangeTitle}
               value={title}
+              errorMessage={titleError?.message}
             />
-            <TimeSelect onChange={(event) => setPeriod(event.target.value)} />
+            <TimeSelect
+              onChange={handleChangePeriod}
+              errorMessage={periodError?.message}
+            />
             <Input
               id="description"
               label="Descrição"
               placeholder="Descreva a tarefa"
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={handleChangeDescription}
               value={description}
+              errorMessage={descriptionError?.message}
             />
 
             <div className="flex gap-3">
