@@ -1,6 +1,6 @@
 import InputLabel from './InputLabel';
 
-const TimeSelect = () => {
+const TimeSelect = (props) => {
   return (
     <div className="flex flex-col text-left">
       <InputLabel htmlFor="time" label="Horário" />
@@ -8,6 +8,7 @@ const TimeSelect = () => {
       <select
         id="time"
         className="rounded-lg border border-solid border-[#ECECEC] px-4 py-3 text-sm text-[#35383E] outline-[#00ADB5]"
+        {...props}
       >
         <option value="" disabled selected>
           Selecione
