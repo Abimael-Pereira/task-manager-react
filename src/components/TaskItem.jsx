@@ -1,7 +1,7 @@
 import {
   CheckIcon,
   DetailsIcon,
-  LoaderIcon,
+  LoaderCircleIcon,
   TrashIcon,
 } from '../assets/icons/';
 import Button from './Button';
@@ -35,7 +35,7 @@ const TaskItem = ({ task, handleCheckStatus, handleDeletTask }) => {
           />
           {task.status === 'done' && <CheckIcon />}
           {task.status === 'in_progress' && (
-            <LoaderIcon className="text-brand-white animate-spin" />
+            <LoaderCircleIcon className="text-brand-white animate-spin" />
           )}
         </label>
         <p>{task.title}</p>
