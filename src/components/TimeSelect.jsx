@@ -10,7 +10,7 @@ const TimeSelect = forwardRef((props, ref) => {
 
       <select
         id="time"
-        className="rounded-lg border border-solid border-[#ECECEC] px-4 py-3 text-sm text-[#35383E] outline-[#00ADB5]"
+        className="rounded-lg border border-solid border-brand-light-gray px-4 py-3 text-sm text-brand-dark-blue outline-brand-primary"
         {...props}
         ref={ref}
       >

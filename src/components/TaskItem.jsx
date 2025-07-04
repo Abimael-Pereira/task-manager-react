@@ -9,14 +9,14 @@ import Button from './Button';
 const TaskItem = ({ task, handleCheckStatus, handleDeletTask }) => {
   const getStatusClasses = () => {
     if (task.status === 'done') {
-      return 'bg-[#00ADB5] text-[#002C2E]';
+      return 'bg-brand-primary text-brand-dark-blue';
     }
 
     if (task.status === 'in_progress') {
-      return 'bg-[#FFAA04] text-[#FFAA04]';
+      return 'bg-brand-process text-brand-process';
     }
 
-    return 'bg-[#35383E] text-[#35383E] bg-opacity-10';
+    return 'bg-brand-dark-blue text-brand-dark-blue bg-opacity-10';
   };
 
   return (
@@ -35,14 +35,14 @@ const TaskItem = ({ task, handleCheckStatus, handleDeletTask }) => {
           />
           {task.status === 'done' && <CheckIcon />}
           {task.status === 'in_progress' && (
-            <LoaderCircleIcon className="text-brand-white animate-spin" />
+            <LoaderCircleIcon className="animate-spin text-brand-white" />
           )}
         </label>
         <p>{task.title}</p>
       </div>
       <div className="flex items-center gap-2">
         <Button variant="ghost" onClick={() => handleDeletTask(task.id)}>
-          <TrashIcon className="text-[#9A9C9F]" />
+          <TrashIcon className="text-brand-text-gray" />
         </Button>
         <a href="#" className="transition-opacity hover:opacity-80">
           <DetailsIcon />
