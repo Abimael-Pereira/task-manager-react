@@ -1,45 +1,59 @@
 {
   "tasks": [
     {
-      "id": 1,
+      "id": "1",
       "title": "Tarefa 01",
       "description": "Descrição da tarefa 01",
       "period": "morning",
       "status": "done"
     },
     {
-      "id": 2,
+      "id": "2",
       "title": "Tarefa 02",
       "description": "Descrição da tarefa 02",
       "period": "morning",
       "status": "done"
     },
     {
-      "id": 3,
+      "id": "3",
       "title": "Tarefa 03",
       "description": "Descrição da tarefa 03",
       "period": "afternoon",
       "status": "in_progress"
     },
     {
-      "id": 4,
+      "id": "4",
       "title": "Tarefa 04",
       "description": "Descrição da tarefa 04",
       "period": "afternoon",
       "status": "in_progress"
     },
     {
-      "id": 5,
+      "id": "5",
       "title": "Tarefa 05",
       "description": "Descrição da tarefa 05",
       "period": "evening",
       "status": "not_started"
     },
     {
-      "id": 6,
+      "id": "6",
       "title": "Tarefa 06",
       "description": "Descrição da tarefa 06",
       "period": "evening",
+      "status": "not_started"
+    },
+    {
+      "id": "e52b4ed6-4b32-4fa5-9d52-ce841fedc253",
+      "title": "Aasd",
+      "description": "asd1",
+      "period": "morning",
+      "status": "not_started"
+    },
+    {
+      "id": "1d478e63-e62f-4a75-9b6b-79fea66af26b",
+      "title": "Estudar",
+      "description": "Estudar React",
+      "period": "afternoon",
       "status": "not_started"
     }
   ]

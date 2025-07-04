@@ -59,7 +59,17 @@ const Tasks = () => {
     toast.success('Tarefa deletada com sucesso!');
   };
 
-  const handleAddTaskSubmit = (newTask) => {
+  const handleAddTaskSubmit = async (newTask) => {
+    const response = await fetch('http://localhost:3000/tasks', {
+      method: 'POST',
+      body: JSON.stringify(newTask),
+    });
+
+    if (!response.ok) {
+      toast.error('Erro ao adicionar tarefa. Tente novamente.');
+      return;
+    }
+
     setTasks((prevTasks) => [...prevTasks, newTask]);
     toast.success('Tarefa adicionada com sucesso!');
     setAddTaskDialogIsOpen(false);
