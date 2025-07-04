@@ -14,9 +14,9 @@ const TimeSelect = forwardRef(({ errorMessage, ...rest }, ref) => {
         className="rounded-lg border border-solid border-brand-light-gray px-4 py-3 text-sm text-brand-dark-blue outline-brand-primary"
         {...rest}
         ref={ref}
-        defaultValue={'selecione'}
+        defaultValue=""
       >
-        <option value="selecione" disabled>
+        <option value="" disabled>
           Selecione
         </option>
         <option value="morning">Manhã</option>
