@@ -34,20 +34,6 @@
       "description": "Descrição da tarefa 05",
       "period": "evening",
       "status": "not_started"
-    },
-    {
-      "id": "6",
-      "title": "Tarefa 06",
-      "description": "Descrição da tarefa 06",
-      "period": "evening",
-      "status": "not_started"
-    },
-    {
-      "id": "eedc9c92-c5a1-4b2f-a738-9d64c704496c",
-      "title": "Estudar React",
-      "description": "Estudar React",
-      "period": "morning",
-      "status": "done"
     }
   ]
 }
