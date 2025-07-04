@@ -43,18 +43,11 @@
       "status": "not_started"
     },
     {
-      "id": "e52b4ed6-4b32-4fa5-9d52-ce841fedc253",
-      "title": "Aasd",
-      "description": "asd1",
-      "period": "morning",
-      "status": "not_started"
-    },
-    {
-      "id": "1d478e63-e62f-4a75-9b6b-79fea66af26b",
-      "title": "Estudar",
+      "id": "eedc9c92-c5a1-4b2f-a738-9d64c704496c",
+      "title": "Estudar React",
       "description": "Estudar React",
-      "period": "afternoon",
-      "status": "not_started"
+      "period": "morning",
+      "status": "done"
     }
   ]
 }

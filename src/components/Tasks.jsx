@@ -32,28 +32,55 @@ const Tasks = () => {
   const afternoonTasks = tasks.filter((tasks) => tasks.period === 'afternoon');
   const nightTasks = tasks.filter((tasks) => tasks.period === 'evening');
 
-  const handleCheckStatus = (taskId) => {
+  const handleCheckStatus = async (taskId) => {
+    let newStatus = '';
+
     const newTasks = tasks.map((task) => {
       if (task.id !== taskId) return task;
 
       if (task.status === 'not_started') {
         toast.warning('Tarefa iniciada com sucesso!');
+        newStatus = 'in_progress';
         return { ...task, status: 'in_progress' };
       }
 
       if (task.status === 'in_progress') {
         toast.success('Tarefa concluída com sucesso!');
+        newStatus = 'done';
         return { ...task, status: 'done' };
       }
 
+      newStatus = 'not_started';
       toast.info('Tarefa reiniciada com sucesso!');
       return { ...task, status: 'not_started' };
     });
 
+    const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status: newStatus }),
+    });
+
+    if (!response.ok) {
+      toast.error('Erro ao atualizar tarefa. Tente novamente.');
+      return;
+    }
+
     setTasks(newTasks);
   };
 
-  const handleDeletTask = (taskId) => {
+  const handleDeletTask = async (taskId) => {
+    const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      toast.error('Erro ao deletar tarefa. Tente novamente.');
+      return;
+    }
+
     const newTasks = tasks.filter((task) => task.id !== taskId);
     setTasks(newTasks);
     toast.success('Tarefa deletada com sucesso!');
@@ -62,6 +89,9 @@ const Tasks = () => {
   const handleAddTaskSubmit = async (newTask) => {
     const response = await fetch('http://localhost:3000/tasks', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(newTask),
     });
 
