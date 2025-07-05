@@ -7,12 +7,14 @@ import { CSSTransition } from 'react-transition-group';
 import { toast } from 'sonner';
 import { v4 } from 'uuid';
 
+import { LoaderCircleIcon } from '../assets/icons';
 import Button from './Button';
 import Input from './Input';
 import TimeSelect from './TimeSelect';
 
-const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
+const AddTaskDialog = ({ isOpen, handleClose, onSubmitSuccess }) => {
   const [errors, setErrors] = useState([]);
+  const [saveTaskIsLoading, setSaveTaskIsLoading] = useState(false);
 
   const nodeRef = useRef();
   const titleRef = useRef();
@@ -23,7 +25,7 @@ const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
     setErrors([]);
   }, [isOpen]);
 
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
     const errors = [];
 
     if (!titleRef.current.value.trim()) {
@@ -47,13 +49,33 @@ const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
       return;
     }
 
-    handleSubmit({
+    setSaveTaskIsLoading(true);
+
+    const newTask = {
       id: v4(),
       title: titleRef.current.value,
       description: descriptionRef.current.value,
       period: periodRef.current.value,
       status: 'not_started',
+    };
+
+    const response = await fetch('http://localhost:3000/tasks', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newTask),
     });
+
+    if (!response.ok) {
+      toast.error('Erro ao adicionar tarefa. Tente novamente.');
+      return;
+    }
+
+    onSubmitSuccess(newTask);
+    setSaveTaskIsLoading(false);
+    handleClose();
+    toast.success('Tarefa adicionada com sucesso!');
   };
 
   const titleError = errors.find((error) => error.field === 'title');
@@ -89,14 +111,20 @@ const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
               placeholder="Título da tarefa"
               errorMessage={titleError?.message}
               ref={titleRef}
+              disabled={saveTaskIsLoading}
             />
-            <TimeSelect errorMessage={periodError?.message} ref={periodRef} />
+            <TimeSelect
+              errorMessage={periodError?.message}
+              ref={periodRef}
+              disabled={saveTaskIsLoading}
+            />
             <Input
               id="description"
               label="Descrição"
               placeholder="Descreva a tarefa"
               errorMessage={descriptionError?.message}
               ref={descriptionRef}
+              disabled={saveTaskIsLoading}
             />
 
             <div className="flex gap-3">
@@ -108,8 +136,17 @@ const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
               >
                 Cancelar
               </Button>
-              <Button size="lg" className="w-full" onClick={handleSaveClick}>
-                Salvar
+              <Button
+                size="lg"
+                className="w-full"
+                onClick={handleSaveClick}
+                disabled={saveTaskIsLoading}
+              >
+                {saveTaskIsLoading ? (
+                  <LoaderCircleIcon className="animate-spin text-brand-light-gray" />
+                ) : (
+                  'Salvar'
+                )}
               </Button>
             </div>
           </div>
