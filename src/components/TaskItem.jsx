@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import {
@@ -75,9 +76,13 @@ const TaskItem = ({ task, handleCheckStatus, onDeleteSuccess }) => {
             <TrashIcon className="text-brand-text-gray" />
           )}
         </Button>
-        <a href="#" className="transition-opacity hover:opacity-80">
+        <Link
+          to={`/task/${task.id}`}
+          href="#"
+          className="transition-opacity hover:opacity-80"
+        >
           <DetailsIcon />
-        </a>
+        </Link>
       </div>
     </div>
   );
