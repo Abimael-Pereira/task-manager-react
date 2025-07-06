@@ -78,7 +78,6 @@ const TaskItem = ({ task, handleCheckStatus, onDeleteSuccess }) => {
         </Button>
         <Link
           to={`/task/${task.id}`}
-          href="#"
           className="transition-opacity hover:opacity-80"
         >
           <DetailsIcon />
