@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -16,13 +17,13 @@ import TimeSelect from '../components/TimeSelect';
 const TaskDetailsPage = () => {
   const { taskId } = useParams();
   const [task, setTask] = useState(null);
-  const [errors, setErrors] = useState([]);
   const [deleteTaskIsLoading, setDeleteTaskIsLoading] = useState(false);
-  const [saveTaskIsLoading, setSaveTaskIsLoading] = useState(false);
-
-  const titleRef = useRef();
-  const periodRef = useRef();
-  const descriptionRef = useRef();
+  const {
+    register,
+    formState: { errors, isSubmitting },
+    handleSubmit,
+    reset,
+  } = useForm();
 
   const navigate = useNavigate();
 
@@ -38,10 +39,11 @@ const TaskDetailsPage = () => {
       const data = await response.json();
 
       setTask(data);
+      reset(data);
     };
 
     fetchTaskDetails();
-  }, [taskId]);
+  }, [taskId, reset]);
 
   const handleBackPageClick = () => {
     navigate(-1);
@@ -68,36 +70,11 @@ const TaskDetailsPage = () => {
     });
   };
 
-  const handleSaveTaskClick = async () => {
-    const errors = [];
-
-    if (!titleRef.current.value.trim()) {
-      errors.push({ field: 'title', message: 'Título é obrigatório.' });
-    }
-
-    if (!descriptionRef.current.value.trim()) {
-      errors.push({
-        field: 'description',
-        message: 'Descrição é obrigatória.',
-      });
-    }
-
-    if (!periodRef.current.value.trim()) {
-      errors.push({ field: 'period', message: 'Período é obrigatório.' });
-    }
-
-    if (errors.length > 0) {
-      setErrors(errors);
-      toast.error('Por favor, preencha todos os campos.');
-      return;
-    }
-
-    setSaveTaskIsLoading(true);
-
+  const handleSaveTaskClick = async (data) => {
     const updatedTask = {
-      title: titleRef.current.value,
-      period: periodRef.current.value,
-      description: descriptionRef.current.value,
+      title: data.title.trim(),
+      period: data.period,
+      description: data.description.trim(),
     };
 
     const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
@@ -110,11 +87,8 @@ const TaskDetailsPage = () => {
 
     if (!response.ok) {
       toast.error('Erro ao atualizar tarefa, tente novamente.');
-      setSaveTaskIsLoading(false);
       return;
     }
-
-    setSaveTaskIsLoading(false);
 
     navigate('/', {
       state: {
@@ -122,12 +96,6 @@ const TaskDetailsPage = () => {
       },
     });
   };
-
-  const titleError = errors.find((error) => error.field === 'title');
-  const descriptionError = errors.find(
-    (error) => error.field === 'description'
-  );
-  const periodError = errors.find((error) => error.field === 'period');
 
   if (!task) {
     return (
@@ -177,44 +145,53 @@ const TaskDetailsPage = () => {
           </div>
         </div>
 
-        <div className="mt-6 space-y-6 rounded-xl bg-brand-white p-6">
-          <Input
-            id={`title-${task.id}`}
-            label="Nome"
-            defaultValue={task?.title}
-            ref={titleRef}
-            errorMessage={titleError?.message}
-          />
-          <TimeSelect
-            id={`period-${task.id}`}
-            defaultValue={task?.period}
-            ref={periodRef}
-            errorMessage={periodError?.message}
-          />
-          <Input
-            id={`description-${task.id}`}
-            label="Descrição"
-            defaultValue={task?.description}
-            ref={descriptionRef}
-            errorMessage={descriptionError?.message}
-          />
-        </div>
+        <form onSubmit={handleSubmit(handleSaveTaskClick)}>
+          <div className="mt-6 space-y-6 rounded-xl bg-brand-white p-6">
+            <Input
+              id={`title-${task.id}`}
+              label="Nome"
+              {...register('title', {
+                required: 'O título é obrigatório',
+                validate: {
+                  notEmpty: (value) =>
+                    value.trim() !== '' || 'O título não pode ser vazio',
+                },
+              })}
+              errorMessage={errors?.title?.message}
+            />
+            <TimeSelect
+              id={`period-${task.id}`}
+              {...register('period', {
+                required: 'O período é obrigatório',
+              })}
+              errorMessage={errors?.period?.message}
+            />
+            <Input
+              id={`description-${task.id}`}
+              label="Descrição"
+              {...register('description', {
+                required: 'A descrição é obrigatória',
+                validate: {
+                  notEmpty: (value) =>
+                    value.trim() !== '' || 'A descrição não pode ser vazia',
+                },
+              })}
+              errorMessage={errors?.description?.message}
+            />
+          </div>
 
-        <div className="mt-6 flex justify-end gap-3">
-          <Button size="lg" color="secondary" onClick={handleBackPageClick}>
-            Cancelar
-          </Button>
-          <Button
-            size="lg"
-            onClick={handleSaveTaskClick}
-            disabled={saveTaskIsLoading}
-          >
-            {saveTaskIsLoading && (
-              <LoaderCircleIcon className="animate-spin text-brand-light-gray" />
-            )}
-            Salvar
-          </Button>
-        </div>
+          <div className="mt-6 flex justify-end gap-3">
+            <Button size="lg" color="secondary" onClick={handleBackPageClick}>
+              Cancelar
+            </Button>
+            <Button size="lg" disabled={isSubmitting} type="submit">
+              {isSubmitting && (
+                <LoaderCircleIcon className="animate-spin text-brand-light-gray" />
+              )}
+              Salvar
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );
