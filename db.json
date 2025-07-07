@@ -1,24 +1,10 @@
 {
   "tasks": [
     {
-      "id": "1",
-      "title": "Tarefa 01",
-      "description": "Descrição da tarefa 01",
+      "id": "e0a483d1-a6b9-4efc-bc33-388c0c308c24",
+      "title": "Estudar",
+      "description": "Estudar react",
       "period": "morning",
-      "status": "done"
-    },
-    {
-      "id": "2",
-      "title": "Tarefa 02",
-      "description": "Descrição da tarefa 02",
-      "period": "morning",
-      "status": "done"
-    },
-    {
-      "id": "ad1b21b5-6e85-401b-ae5f-940283d5b45b",
-      "title": "teste",
-      "description": "testeee",
-      "period": "evening",
       "status": "not_started"
     }
   ]
