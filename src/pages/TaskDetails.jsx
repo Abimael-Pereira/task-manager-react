@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -16,56 +16,88 @@ import TimeSelect from '../components/TimeSelect';
 
 const TaskDetailsPage = () => {
   const { taskId } = useParams();
-  const [task, setTask] = useState(null);
-  const [deleteTaskIsLoading, setDeleteTaskIsLoading] = useState(false);
+  const queryClient = useQueryClient();
+
   const {
     register,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     handleSubmit,
     reset,
   } = useForm();
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchTaskDetails = async () => {
+  const { data: task, isPending: isTaskLoading } = useQuery({
+    queryKey: ['taskDetails', taskId],
+    queryFn: async () => {
       const response = await fetch(`http://localhost:3000/tasks/${taskId}`);
 
+      const data = await response.json();
+      reset(data);
+
+      return data;
+    },
+  });
+
+  const { mutate: deleteMutate, isPending: isDeleteLoading } = useMutation({
+    mutationKey: ['deleteTask', taskId],
+    mutationFn: async () => {
+      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+        method: 'DELETE',
+      });
+
       if (!response.ok) {
-        console.error('Failed to fetch task details');
-        return;
+        throw new Error();
       }
 
       const data = await response.json();
 
-      setTask(data);
-      reset(data);
-    };
+      queryClient.setQueryData(['tasks'], (oldTasks) => {
+        return oldTasks.filter((task) => task.id !== data.id);
+      });
 
-    fetchTaskDetails();
-  }, [taskId, reset]);
+      return data;
+    },
+  });
 
-  const handleBackPageClick = () => {
-    navigate(-1);
-  };
+  const { mutate: updateMutate, isPending: isUpdateLoading } = useMutation({
+    mutationKey: ['updateTask', taskId],
+    mutationFn: async (updatedTask) => {
+      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedTask),
+      });
+
+      if (!response.ok) {
+        throw new Error();
+      }
+
+      const updatedData = await response.json();
+      queryClient.setQueryData(['tasks'], (oldTasks) => {
+        return oldTasks.map((task) =>
+          task.id === updatedData.id ? updatedData : task
+        );
+      });
+
+      return updatedData;
+    },
+  });
+
+  const navigate = useNavigate();
 
   const handleDeleteTask = async () => {
-    setDeleteTaskIsLoading(true);
-    const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
-      method: 'DELETE',
-    });
+    deleteMutate(task.id, {
+      onSuccess: () => {
+        navigate('/', {
+          state: {
+            toastMessage: 'Tarefa deletada com sucesso.',
+          },
+        });
+      },
 
-    if (!response.ok) {
-      toast.error('Erro ao deletar tarefa, tente novamente.');
-      setDeleteTaskIsLoading(false);
-      return;
-    }
-
-    setDeleteTaskIsLoading(false);
-
-    navigate('/', {
-      state: {
-        toastMessage: 'Tarefa deletada com sucesso.',
+      onError: () => {
+        toast.error('Erro ao deletar tarefa, tente novamente.');
       },
     });
   };
@@ -77,27 +109,22 @@ const TaskDetailsPage = () => {
       description: data.description.trim(),
     };
 
-    const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
+    updateMutate(updatedTask, {
+      onSuccess: () => {
+        navigate('/', {
+          state: {
+            toastMessage: 'Tarefa atualizada com sucesso.',
+          },
+        });
       },
-      body: JSON.stringify(updatedTask),
-    });
 
-    if (!response.ok) {
-      toast.error('Erro ao atualizar tarefa, tente novamente.');
-      return;
-    }
-
-    navigate('/', {
-      state: {
-        toastMessage: 'Tarefa atualizada com sucesso.',
+      onError: () => {
+        toast.error('Erro ao atualizar tarefa, tente novamente.');
       },
     });
   };
 
-  if (!task) {
+  if (isTaskLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-brand-white">
         <span className="text-lg font-semibold text-brand-primary">
@@ -113,7 +140,7 @@ const TaskDetailsPage = () => {
       <div className="w-full px-8 py-16">
         <div>
           <button
-            onClick={handleBackPageClick}
+            onClick={() => navigate(-1)}
             className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-primary"
           >
             <ArrowLeftIcon />
@@ -133,9 +160,9 @@ const TaskDetailsPage = () => {
               onClick={handleDeleteTask}
               className="h-fit self-end"
               color="danger"
-              disabled={deleteTaskIsLoading}
+              disabled={isDeleteLoading || isUpdateLoading}
             >
-              {deleteTaskIsLoading ? (
+              {isDeleteLoading ? (
                 <LoaderCircleIcon className="animate-spin text-brand-light-gray" />
               ) : (
                 <TrashIcon />
@@ -181,11 +208,20 @@ const TaskDetailsPage = () => {
           </div>
 
           <div className="mt-6 flex justify-end gap-3">
-            <Button size="lg" color="secondary" onClick={handleBackPageClick}>
+            <Button
+              size="lg"
+              color="secondary"
+              onClick={() => navigate(-1)}
+              type="button"
+            >
               Cancelar
             </Button>
-            <Button size="lg" disabled={isSubmitting} type="submit">
-              {isSubmitting && (
+            <Button
+              size="lg"
+              disabled={isUpdateLoading || isDeleteLoading}
+              type="submit"
+            >
+              {isUpdateLoading && (
                 <LoaderCircleIcon className="animate-spin text-brand-light-gray" />
               )}
               Salvar
