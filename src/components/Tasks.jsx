@@ -78,6 +78,7 @@ const Tasks = () => {
 
   const onTaskSubmitSuccess = async (newTask) => {
     setTasks((prevTasks) => [...prevTasks, newTask]);
+    toast.success('Tarefa adicionada com sucesso!');
   };
 
   return (
