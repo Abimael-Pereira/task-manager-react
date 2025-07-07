@@ -106,7 +106,7 @@ const AddTaskDialog = ({ isOpen, handleClose, onSubmitSuccess }) => {
 
           <div className="mt-4 flex w-[336px] flex-col space-y-4">
             <Input
-              id="title"
+              id="title-id"
               label="Título"
               placeholder="Título da tarefa"
               errorMessage={titleError?.message}
@@ -114,12 +114,14 @@ const AddTaskDialog = ({ isOpen, handleClose, onSubmitSuccess }) => {
               disabled={saveTaskIsLoading}
             />
             <TimeSelect
+              id="period-id"
               errorMessage={periodError?.message}
               ref={periodRef}
               disabled={saveTaskIsLoading}
+              defaultValue=""
             />
             <Input
-              id="description"
+              id="description-id"
               label="Descrição"
               placeholder="Descreva a tarefa"
               errorMessage={descriptionError?.message}
@@ -142,11 +144,10 @@ const AddTaskDialog = ({ isOpen, handleClose, onSubmitSuccess }) => {
                 onClick={handleSaveClick}
                 disabled={saveTaskIsLoading}
               >
-                {saveTaskIsLoading ? (
+                {saveTaskIsLoading && (
                   <LoaderCircleIcon className="animate-spin text-brand-light-gray" />
-                ) : (
-                  'Salvar'
                 )}
+                Salvar
               </Button>
             </div>
           </div>
@@ -160,7 +161,7 @@ const AddTaskDialog = ({ isOpen, handleClose, onSubmitSuccess }) => {
 AddTaskDialog.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
+  onSubmitSuccess: PropTypes.func.isRequired,
 };
 
 export default AddTaskDialog;

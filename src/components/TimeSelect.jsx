@@ -7,14 +7,13 @@ import InputLabel from './InputLabel';
 const TimeSelect = forwardRef(({ errorMessage, ...rest }, ref) => {
   return (
     <div className="flex flex-col text-left">
-      <InputLabel htmlFor="time" label="Horário" />
+      <InputLabel htmlFor={rest.id} label="Horário" />
 
       <select
-        id="time"
-        className="rounded-lg border border-solid border-brand-light-gray px-4 py-3 text-sm text-brand-dark-blue outline-brand-primary"
-        {...rest}
+        id={rest.id}
+        className="text-brand rounded-lg border border-solid border-brand-light-gray px-4 py-3 text-sm text-brand-dark-blue outline-brand-primary"
         ref={ref}
-        defaultValue=""
+        {...rest}
       >
         <option value="" disabled>
           Selecione
@@ -30,6 +29,7 @@ const TimeSelect = forwardRef(({ errorMessage, ...rest }, ref) => {
 
 TimeSelect.propTypes = {
   errorMessage: PropTypes.string,
+  id: PropTypes.string.isRequired,
 };
 
 TimeSelect.displayName = 'TimeSelect';
