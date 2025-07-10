@@ -9,10 +9,39 @@ import {
   TrashIcon,
 } from '../assets/icons/';
 import { useDeleteTask } from '../hooks/data/use-delete-task';
+import { useUpdateTask } from '../hooks/data/use-update-task';
 import Button from './Button';
 
-const TaskItem = ({ task, handleCheckStatus }) => {
+const TaskItem = ({ task }) => {
   const { mutate: deleteTask, isPending } = useDeleteTask(task.id);
+
+  const { mutate: updateTask } = useUpdateTask(task.id);
+
+  const handleCheckStatus = () => {
+    const newStatus = () => {
+      if (task.status === 'not_started') {
+        return 'in_progress';
+      }
+
+      if (task.status === 'in_progress') {
+        return 'done';
+      }
+
+      return 'not_started';
+    };
+
+    updateTask(
+      { status: newStatus() },
+      {
+        onSuccess: () => {
+          toast.success('Status da tarefa atualizado com sucesso!');
+        },
+        onError: () => {
+          toast.error('Erro ao atualizar status da tarefa, tente novamente.');
+        },
+      }
+    );
+  };
 
   const handleDeleteClick = async () => {
     deleteTask(task.id, {
@@ -49,7 +78,7 @@ const TaskItem = ({ task, handleCheckStatus }) => {
             type="checkbox"
             checked={task.status === 'done'}
             className="absolute h-full w-full cursor-pointer opacity-0"
-            onChange={() => handleCheckStatus(task.id)}
+            onChange={handleCheckStatus}
           />
           {task.status === 'done' && <CheckIcon />}
           {task.status === 'in_progress' && (
@@ -85,7 +114,6 @@ TaskItem.propTypes = {
     period: PropTypes.oneOf(['morning', 'afternoon', 'evening']).isRequired,
     status: PropTypes.oneOf(['not_started', 'in_progress', 'done']).isRequired,
   }).isRequired,
-  handleCheckStatus: PropTypes.func.isRequired,
 };
 
 export default TaskItem;
