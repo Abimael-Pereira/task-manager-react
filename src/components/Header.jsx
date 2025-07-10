@@ -1,6 +1,9 @@
+import { toast } from 'sonner';
+
 import { AddIcon, TrashIcon } from '../assets/icons/index.js';
 import AddTaskDialog from '../components/AddTaskDialog.jsx';
 import Button from '../components/Button';
+import { useDeleteAllTasks } from '../hooks/data/use-delete-all-tasks.js';
 
 const Header = ({
   subTitle,
@@ -8,6 +11,19 @@ const Header = ({
   addTaskDialogIsOpen,
   setAddTaskDialogIsOpen,
 }) => {
+  const { mutate: deleteTasks } = useDeleteAllTasks();
+
+  const handleDeleteTasks = () => {
+    deleteTasks(undefined, {
+      onSuccess: () => {
+        toast.success('Tarefas deletadas com sucesso!');
+      },
+      onError: (error) => {
+        toast.error(`Erro ao deletar tarefas: ${error.message}`);
+      },
+    });
+  };
+
   return (
     <div className="flex justify-between">
       <div>
@@ -18,7 +34,7 @@ const Header = ({
       </div>
 
       <div className="flex items-center gap-3 self-end">
-        <Button color={'ghost'}>
+        <Button color={'ghost'} onClick={handleDeleteTasks}>
           Limpar tarefas <TrashIcon />
         </Button>
         <Button color={'primary'} onClick={() => setAddTaskDialogIsOpen(true)}>
