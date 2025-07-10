@@ -41,7 +41,7 @@ const TaskDetailsPage = () => {
   const handleDeleteTask = async () => {
     deleteMutate(task.id, {
       onSuccess: () => {
-        navigate('/', {
+        navigate('/tasks', {
           state: {
             toastMessage: 'Tarefa deletada com sucesso.',
           },
@@ -63,7 +63,7 @@ const TaskDetailsPage = () => {
 
     updateMutate(updatedTask, {
       onSuccess: () => {
-        navigate('/', {
+        navigate('/tasks', {
           state: {
             toastMessage: 'Tarefa atualizada com sucesso.',
           },

@@ -8,6 +8,7 @@ import { Toaster } from 'sonner';
 
 import App from './App.jsx';
 import TaskDetailsPage from './pages/TaskDetails.jsx';
+import Tasks from './pages/Tasks.jsx';
 
 const queryClient = new QueryClient();
 
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+  },
+  {
+    path: '/tasks',
+    element: <Tasks />,
   },
   {
     path: '/task/:taskId',

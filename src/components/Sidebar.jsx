@@ -1,9 +1,13 @@
+import { useLocation } from 'react-router-dom';
+
 import { HomeIcon, TasksIcon } from '../assets/icons/';
 import SidebarButton from './SidebarButton';
 
 const Sidebar = () => {
+  const location = useLocation();
+
   return (
-    <div className="h-screen w-72 bg-white">
+    <div className="h-screen min-w-72 max-w-72 bg-white">
       <div className="space-y-4 px-8 py-6">
         <h1 className="text-xl font-semibold text-brand-primary">
           Task manager
@@ -14,11 +18,16 @@ const Sidebar = () => {
         </p>
       </div>
       <div className="flex flex-col gap-2 p-2">
-        <SidebarButton>
+        <SidebarButton
+          color={location.pathname === '/' ? 'selected' : undefined}
+        >
           <HomeIcon />
           Início
         </SidebarButton>
-        <SidebarButton color="selected">
+        <SidebarButton
+          color={location.pathname === '/tasks' ? 'selected' : undefined}
+          urlToDirect="/tasks"
+        >
           <TasksIcon />
           Minhas tarefas
         </SidebarButton>

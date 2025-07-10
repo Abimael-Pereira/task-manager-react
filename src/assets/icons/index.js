@@ -5,6 +5,7 @@ import ChevronRightIcon from './chevron-right.svg?react';
 import CloudSunIcon from './cloud-sun.svg?react';
 import DetailsIcon from './details.svg?react';
 import HomeIcon from './home.svg?react';
+import LayoutListIcon from './layout-list.svg?react';
 import LoaderCircleIcon from './loader-circle.svg?react';
 import MoonIcon from './moon.svg?react';
 import SunIcon from './sun.svg?react';
@@ -19,6 +20,7 @@ export {
   CloudSunIcon,
   DetailsIcon,
   HomeIcon,
+  LayoutListIcon,
   LoaderCircleIcon,
   MoonIcon,
   SunIcon,

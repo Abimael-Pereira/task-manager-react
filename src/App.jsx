@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import Sidebar from './components/Sidebar';
-import Tasks from './components/Tasks';
+import HomePage from './pages/Home';
 
 function App() {
   const location = useLocation();
@@ -17,7 +17,7 @@ function App() {
   return (
     <div className="flex">
       <Sidebar />
-      <Tasks />
+      <HomePage />
     </div>
   );
 }
